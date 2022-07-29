@@ -1,35 +1,28 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-
-from cursos.serializers import AvaliacaoSerializer, CursoSerializer
+from rest_framework import generics
 
 from .models import Curso, Avaliacao
+from .serializers import CursoSerializer, AvaliacaoSerializer
+
+# Metade do crud, o que nao precisa de id (criar e pesquisar)
 
 
-class CursoAPIView(APIView):
+class CursosAPIView(generics.ListCreateAPIView):
+    queryset = Curso.objects.all()
+    serializer_class = CursoSerializer
 
-    def get(self, request):
-        cursos = Curso.objects.all()
-        serializer = CursoSerializer(cursos, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        serializer = CursoSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+# A outra metade precisa de um id (atualizar e deletar)
 
 
-class AvaliacaoAPIView(APIView):
+class CursoAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Curso.objects.all()
+    serializer_class = CursoSerializer
 
-    def get(self, request):
-        avaliacoes = Avaliacao.objects.all()
-        serializer = AvaliacaoSerializer(avaliacoes, many=True)
-        return Response(serializer.data)
-    
-    def post(self, request):
-        serializer = AvaliacaoSerializer(request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class AvaliacoesAPIView(generics.ListCreateAPIView):
+    queryset = Avaliacao.objects.all()
+    serializer_class = AvaliacaoSerializer
+
+
+class AvaliacaoAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Avaliacao.objects.all()
+    serializer_class = AvaliacaoSerializer
