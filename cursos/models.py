@@ -37,4 +37,4 @@ class Avaliacao(Base):
         unique_together = ['email', 'curso']
 
     def __str__(self) -> str:
-        return f'{self.nome} avaliou o curso |{self.curso}| com nota {self.avaliacao}'
+        return f'{self.nome} avaliou o curso | {self.curso} | com nota {self.avaliacao}'
