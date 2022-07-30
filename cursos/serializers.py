@@ -39,4 +39,4 @@ class CursoSerializer(serializers.ModelSerializer):
         if media is None:
             return 0
         
-        return round(media * 2) / 2
+        return round(media * 2) / 2 #Isso aqui faz um arredondamento "justo"
