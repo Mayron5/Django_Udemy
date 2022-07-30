@@ -5,6 +5,8 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from escola.settings import PAGE_SIZE
+
 from .models import Curso, Avaliacao
 from .serializers import CursoSerializer, AvaliacaoSerializer
 
@@ -56,8 +58,15 @@ class CursoViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['GET'])
     def avaliacoes(self, request, pk=None):
-        curso = self.get_object()
-        serializer = AvaliacaoSerializer(curso.avaliacoes.all(), many=True)
+        self.pagination_class.page_size = PAGE_SIZE
+        avaliacoes = Avaliacao.objects.filter(curso_id=pk)
+        page = self.paginate_queryset(avaliacoes)
+        
+        if page is not None:
+            serializer = AvaliacaoSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        
+        serializer = AvaliacaoSerializer(avaliacoes, many=True)
         return Response(serializer.data)
         
 #Eu posso escrever essa classe com os mixins que eu preciso
